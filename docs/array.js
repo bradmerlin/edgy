@@ -1,3 +1,4 @@
+// csvArray converts a CSV into a 2-dimensional array.
 function csvArray(strData, strDelimiter) {
     // Check to see if the delimiter is defined. If not,
     // then default to comma.
@@ -79,46 +80,4 @@ function csvArray(strData, strDelimiter) {
 
     // Return the parsed data.
     return arrData;
-}
-
-var counter = 0;
-var values = {};
-
-function exists(s) {
-    return Object.keys(values).includes(s);
-}
-
-function valueID(s) {
-    if (exists(s)) {
-        return values[s];
-    }
-    values[s] = ++counter;
-    return counter;
-}
-
-function transform(arr) {
-    var groups = arr.shift();
-    console.log(arr);
-    let nodes = [];
-    let edges = [];
-    console.log(groups);
-    for (let i = 1; i < arr.length; i++) {
-        let frgId = arr[i][0];
-        if (frgId === "") {
-            continue;
-        }
-
-        nodes.push({id: valueID(frgId), label: frgId.slice(0, 10) + "...", group: "ids"});
-        for (let j = 1; j < arr[i].length; j++) {
-
-            let value = arr[i][j];
-            if (value !== "") {
-                if (!exists(value)) {
-                    nodes.push({id: valueID(value), label: value.slice(0, 10) + "...", group: groups[j]});
-                }
-                edges.push({from: valueID(value), to: valueID(frgId)});
-            }
-        }
-    }
-    return {nodes, edges};
 }
