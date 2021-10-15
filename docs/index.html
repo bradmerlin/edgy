@@ -6,7 +6,7 @@
 </head>
 <body>
 <nav>
-  <h1>Edgy</h1>
+  <h1>Edgy.</h1>
   <div id="loader">
     <p>Select local CSV File</p>
     <p><small>Must include column headers, and first column must be a unique ID.</small></p>
@@ -16,15 +16,15 @@
   <form id="settings">
     <label for="stabilise">Pre-stabilise nodes</label>
     <input name="stabilise" id="stabilise" type="checkbox" checked>
-    <p><small>Improves performance by precalculating nodes positions before rendering.</small></p>
+    <p><small>Improves performance by precalculating node positions before rendering.</small></p>
     <br>
     <label for="iterations">Stabilisation iterations</label>
     <input name="iterations" id="iterations" type="number" value="400">
-    <p><small>If <b>Pre-stabilise</b> is enabled, how much precalculation to do before rendering.</small></p>
+    <p><small>If <b>Pre-stabilise nodes</b> is enabled, how much precalculation to do before rendering.</small></p>
     <br>
     <label for="physics">Physics</label>
     <input name="physics" id="physics" type="checkbox">
-    <p><small>Enable inter-node physics after initial render</small></p>
+    <p><small>Enable inter-node physics and further stablisation after initial render.</small></p>
     <br>
     <button id="submit">Graph</button>
   </form>
