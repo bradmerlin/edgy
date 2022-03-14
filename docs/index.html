@@ -1,33 +1,33 @@
 <html>
 <head>
-  <script type="text/javascript" src="https://unpkg.com/vis-network@9.1.0/dist/vis-network.js"></script>
-  <link rel="stylesheet" href="https://unpkg.com/blocks.css/dist/blocks.min.css" />
-  <link rel="stylesheet" href="style.css">
+    <script type="text/javascript" src="https://unpkg.com/vis-network@9.1.0/dist/vis-network.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/blocks.css/dist/blocks.min.css"/>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <nav>
-  <h1>Edgy.</h1>
-  <div id="loader">
-    <p>Select local CSV File</p>
-    <p><small>Must include column headers, and first column must be a unique ID.</small></p>
-    <input id="csv" type="file"/>
-  </div>
-  <hr>
-  <form id="settings">
-    <label for="stabilise">Pre-stabilise nodes</label>
-    <input name="stabilise" id="stabilise" type="checkbox" checked>
-    <p><small>Improves performance by precalculating node positions before rendering.</small></p>
-    <br>
-    <label for="iterations">Stabilisation iterations</label>
-    <input name="iterations" id="iterations" type="number" value="400">
-    <p><small>If <b>Pre-stabilise nodes</b> is enabled, how much precalculation to do before rendering.</small></p>
-    <br>
-    <label for="physics">Physics</label>
-    <input name="physics" id="physics" type="checkbox">
-    <p><small>Enable inter-node physics and further stablisation after initial render.</small></p>
-    <br>
-    <button class="block" id="submit">Render graph</button>
-  </form>
+    <h1>Edgy.</h1>
+    <div id="loader">
+        <p>Select local CSV File</p>
+        <p><small>Must include column headers, and first column must be a unique ID.</small></p>
+        <input id="csv" type="file"/>
+    </div>
+    <hr>
+    <form id="settings">
+        <label for="stabilise">Pre-stabilise nodes</label>
+        <input name="stabilise" id="stabilise" type="checkbox" checked>
+        <p><small>Improves performance by precalculating node positions before rendering.</small></p>
+        <br>
+        <label for="iterations">Stabilisation iterations</label>
+        <input name="iterations" id="iterations" type="number" value="400">
+        <p><small>If <b>Pre-stabilise nodes</b> is enabled, how much precalculation to do before rendering.</small></p>
+        <br>
+        <label for="physics">Physics</label>
+        <input name="physics" id="physics" type="checkbox">
+        <p><small>Enable inter-node physics and further stablisation after initial render.</small></p>
+        <br>
+        <button class="block" id="submit">Render graph</button>
+    </form>
 </nav>
 
 
@@ -48,7 +48,6 @@
         var stabilisationIterations = document.getElementById("iterations").value;
         var enablePhysics = document.getElementById("physics").checked;
 
-        console.log(stabilisationIterations);
         reader.onload = function () {
             const graph = transformer.transform(csvArray(reader.result));
             const container = document.getElementById("graph");
@@ -61,7 +60,7 @@
             const options = {
                 layout: {improvedLayout: false, hierarchical: false},
                 physics: {
-                    enabled: true,
+                    enabled: enablePhysics,
                     solver: "forceAtlas2Based",
                     forceAtlas2Based: {
                         gravitationalConstant: -350,
