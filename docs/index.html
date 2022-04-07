@@ -23,7 +23,7 @@
         <p><small>If <b>Pre-stabilise nodes</b> is enabled, how much precalculation to do before rendering.</small></p>
         <br>
         <label for="physics">Physics</label>
-        <input name="physics" id="physics" type="checkbox">
+        <input name="physics" id="physics" type="checkbox" checked>
         <p><small>Enable inter-node physics and further stablisation after initial render.</small></p>
         <br>
         <button class="block" id="submit">Render graph</button>
@@ -41,15 +41,20 @@
 
     document.getElementById("submit").addEventListener("click", function (e) {
         e.preventDefault();
+
         var reader = new FileReader();
         var transformer = new Transformer();
 
         var enableStabilisation = document.getElementById("stabilise").checked;
         var stabilisationIterations = document.getElementById("iterations").value;
+
         var enablePhysics = document.getElementById("physics").checked;
+        var start = new Date().getTime();
 
         reader.onload = function () {
+            console.log("start processing");
             const graph = transformer.transform(csvArray(reader.result));
+            console.log("transform took", new Date().getTime() - start, "ms");
             const container = document.getElementById("graph");
 
             const data = {
@@ -97,10 +102,13 @@
             network.on("stabilizationIterationsDone", function () {
                 network.setOptions({physics: enablePhysics});
             });
+            console.log("render took", new Date().getTime() - start, "ms");
+
         };
 
         // start reading the file. When it is done, calls the onload event defined above.
         reader.readAsBinaryString(fileInput.files[0]);
+
     });
 </script>
 </body>
