@@ -1,3 +1,6 @@
+* {
+    box-sizing: border-box;
+}
 body {
     font-family: sans-serif;
 }
@@ -21,6 +24,7 @@ nav {
     right: 0px;
     left: 300px;
 
+    padding: 20px;
 }
 
 hr {
@@ -36,4 +40,23 @@ hr {
 
 .block {
     --block-shadow-color: #e15151;
+}
+
+.hidden {
+    display: none;
+}
+
+#loading {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 100px;
+}
+
+svg {
+    max-width: 100%;
+}
+
+svg * {
+    fill: #e15151 !important;
 }

@@ -14,18 +14,21 @@
     </div>
     <hr>
     <form id="settings">
-        <label for="stabilise">Pre-stabilise nodes</label>
-        <input name="stabilise" id="stabilise" type="checkbox" checked>
-        <p><small>Improves performance by precalculating node positions before rendering.</small></p>
-        <br>
-        <label for="iterations">Stabilisation iterations</label>
-        <input name="iterations" id="iterations" type="number" value="400">
-        <p><small>If <b>Pre-stabilise nodes</b> is enabled, how much precalculation to do before rendering.</small></p>
-        <br>
-        <label for="physics">Physics</label>
-        <input name="physics" id="physics" type="checkbox" checked>
-        <p><small>Enable inter-node physics and further stablisation after initial render.</small></p>
-        <br>
+        <label for="labels">Add edge labels</label>
+        <input name="labels" id="labels" type="checkbox" checked>
+        <p><small>Prints labels on all edges. May get messy.</small></p>
+        <hr>
+        <!--        <label for="stabilise">Pre-stabilise nodes</label>-->
+        <!--        <input name="stabilise" id="stabilise" type="checkbox" checked>-->
+        <!--        <p><small>Improves performance by precalculating node positions before rendering.</small></p>-->
+        <!--        <br>-->
+        <!--        <label for="iterations">Stabilisation iterations</label>-->
+        <!--        <input name="iterations" id="iterations" type="number" value="400">-->
+        <!--        <p><small>If <b>Pre-stabilise nodes</b> is enabled, how much precalculation to do before rendering.</small></p>-->
+        <!--        <br>-->
+        <!--        <label for="physics">Physics</label>-->
+        <!--        <input name="physics" id="physics" type="checkbox" checked>-->
+        <!--        <p><small>Enable inter-node physics and further stablisation after initial render.</small></p>-->
         <button class="block" id="submit">Render graph</button>
     </form>
 </nav>
@@ -33,77 +36,130 @@
 
 <div id="graph"></div>
 
+<div id="loading" class="hidden">
+    <svg version="1.1" id="L5" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
+         viewBox="0 0 100 100" enable-background="new 0 0 0 0" xml:space="preserve">
+  <circle fill="#fff" stroke="none" cx="6" cy="50" r="6">
+    <animateTransform
+            attributeName="transform"
+            dur="1s"
+            type="translate"
+            values="0 15 ; 0 -15; 0 15"
+            repeatCount="indefinite"
+            begin="0.1"/>
+  </circle>
+        <circle fill="#fff" stroke="none" cx="30" cy="50" r="6">
+    <animateTransform
+            attributeName="transform"
+            dur="1s"
+            type="translate"
+            values="0 10 ; 0 -10; 0 10"
+            repeatCount="indefinite"
+            begin="0.2"/>
+  </circle>
+        <circle fill="#fff" stroke="none" cx="54" cy="50" r="6">
+    <animateTransform
+            attributeName="transform"
+            dur="1s"
+            type="translate"
+            values="0 5 ; 0 -5; 0 5"
+            repeatCount="indefinite"
+            begin="0.3"/>
+  </circle>
+</svg>
+</div>
+
 <script type="text/javascript" src="array.js"></script>
 <script type="text/javascript" src="graph.js"></script>
+<script type="text/javascript" src="render.js"></script>
 
 <script type="text/javascript">
-    var fileInput = document.getElementById("csv");
-
+    var loading = document.getElementById("loading");
+    var graph = document.getElementById("graph");
     document.getElementById("submit").addEventListener("click", function (e) {
+        var fileInput = document.getElementById("csv");
+
         e.preventDefault();
 
         var reader = new FileReader();
         var transformer = new Transformer();
 
-        var enableStabilisation = document.getElementById("stabilise").checked;
-        var stabilisationIterations = document.getElementById("iterations").value;
+        // var enableStabilisation = document.getElementById("stabilise").checked;
+        // var stabilisationIterations = document.getElementById("iterations").value;
+        // var enablePhysics = document.getElementById("physics").checked;
+        var enableLabels = document.getElementById("labels").checked;
 
-        var enablePhysics = document.getElementById("physics").checked;
+        var enableStabilisation = true;
+        var stabilisationIterations = 400;
+        var enablePhysics = true;
+
         var start = new Date().getTime();
 
         reader.onload = function () {
-            console.log("start processing");
-            const graph = transformer.transform(csvArray(reader.result));
-            console.log("transform took", new Date().getTime() - start, "ms");
-            const container = document.getElementById("graph");
+            try {
 
-            const data = {
-                nodes: new vis.DataSet(graph.nodes),
-                edges: new vis.DataSet(graph.edges),
-            };
 
-            const options = {
-                layout: {improvedLayout: false, hierarchical: false},
-                physics: {
-                    enabled: enablePhysics,
-                    solver: "forceAtlas2Based",
-                    forceAtlas2Based: {
-                        gravitationalConstant: -350,
-                        centralGravity: 0.01,
-                        springConstant: 0.02,
-                        springLength: 10,
-                        damping: 0.4,
-                        avoidOverlap: 0
-                    },
-                    stabilization: {
-                        enabled: enableStabilisation,
-                        iterations: Number(stabilisationIterations)
-                    }
-                },
-                nodes: {
-                    shape: "dot",
-                    size: 30,
-                    font: {
-                        size: 25,
-                    },
-                },
-                edges: {
-                    chosen: {
-                        edge: function (values, id, selected, hovering) {
-                            values.width = 20;
+                console.log("start processing");
+                const graph = transformer.transform(csvArray(reader.result), enableLabels);
+                console.log("transform took", new Date().getTime() - start, "ms");
+                const container = document.getElementById("graph");
+
+                const data = {
+                    nodes: new vis.DataSet(graph.nodes),
+                    edges: new vis.DataSet(graph.edges),
+                };
+
+                const options = {
+                    layout: {improvedLayout: false, hierarchical: false},
+                    physics: {
+                        enabled: enablePhysics,
+                        solver: "forceAtlas2Based",
+                        forceAtlas2Based: {
+                            gravitationalConstant: -350,
+                            centralGravity: 0.01,
+                            springConstant: 0.02,
+                            springLength: 10,
+                            damping: 0.4,
+                            avoidOverlap: 0
+                        },
+                        stabilization: {
+                            enabled: enableStabilisation,
+                            iterations: Number(stabilisationIterations)
                         }
-                    }
-                },
+                    },
+                    nodes: {
+                        shape: "dot",
+                        size: 30,
+                        font: {
+                            size: 50,
+                        },
+                    },
+                    edges: {
+                        chosen: {
+                            edge: function (values, id, selected, hovering) {
+                                values.width = 20;
+                            }
+                        },
+                        font: {
+                            size: 50,
+                        },
 
-                groups: graph.groups,
-            };
+                    },
 
-            const network = new vis.Network(container, data, options);
-            network.on("stabilizationIterationsDone", function () {
-                network.setOptions({physics: enablePhysics});
-            });
-            console.log("render took", new Date().getTime() - start, "ms");
+                    groups: graph.groups,
+                };
 
+                const network = new vis.Network(container, data, options);
+                network.on("stabilizationIterationsDone", function () {
+                    network.setOptions({physics: enablePhysics});
+                });
+                console.log("render took", new Date().getTime() - start, "ms");
+
+                loading.classList.add("hidden");
+            } catch (error) {
+                graph.innerText = error.name + ": " + error.message;
+                loading.classList.add("hidden");
+            }
         };
 
         // start reading the file. When it is done, calls the onload event defined above.

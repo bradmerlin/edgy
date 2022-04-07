@@ -16,7 +16,7 @@ class Transformer {
         return this.counter;
     }
 
-    transform(arr) {
+    transform(arr, withLabels) {
         var groupList = arr.shift();
         var groups = {};
 
@@ -37,14 +37,22 @@ class Transformer {
             }
 
             nodes.push({id: this.valueID(frgId), label: frgId, group: "txns"});
+
             for (let j = 1; j < arr[i].length; j++) {
+
                 let value = arr[i][j];
 
                 if (value !== "") {
                     if (!this.exists(value)) {
                         nodes.push({id: this.valueID(value), label: value, group: groupList[j]});
                     }
-                    edges.push({from: this.valueID(value), to: this.valueID(frgId)});
+
+                    var edge = {from: this.valueID(value), to: this.valueID(frgId)}
+                    if (withLabels) {
+                        edge["label"] = groupList[i];
+                    }
+
+                    edges.push(edge);
                 }
             }
         }
